@@ -16,7 +16,13 @@ export default function ProductList() {
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5); // user-selectable page size
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  
   const handleDeleteRequest = (product: Product) => {
     setProductToDelete(product);
     setDeleteModalOpen(true);
@@ -64,9 +70,9 @@ export default function ProductList() {
     setCurrentPage((prev) => Math.min(prev, totalPages));
   }, [products.length, pageSize]);
 
-  const totalPages = Math.max(1, Math.ceil(products.length / pageSize));
-  const startIndex = (currentPage - 1) * pageSize;
-  const paginatedProducts = products.slice(startIndex, startIndex + pageSize);
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+const startIndex = (currentPage - 1) * pageSize;
+const paginatedProducts = filteredProducts.slice(startIndex, startIndex + pageSize);
 
   return (
     <>
@@ -74,6 +80,7 @@ export default function ProductList() {
         {/* Header with Add Product Button */}
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Products</h1>
+         
           <button
             onClick={handleAddProduct}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 font-medium transition-colors flex items-center gap-2"
@@ -95,7 +102,20 @@ export default function ProductList() {
             Add Product
           </button>
         </div>
-
+      {/* Search bar BELOW the Add Product button */}
+     { products.length === 0 ? (null):<div className="flex justify-end">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="border px-3 py-2 rounded-lg w-60 text-sm focus:ring-2 focus:ring-blue-500"
+          />
+        </div>}
+      
         {/* Product List */}
         {products.length === 0 ? (
           <div className="bg-white rounded-lg shadow-md p-12 text-center">
