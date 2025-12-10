@@ -11,7 +11,9 @@ import {
 export default function Header() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  //const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const cartCount = cartItems.length;
+
   const cartTotal = cartItems.reduce(
     (sum, item) => sum + item.quantity * item.product.price,
     0
@@ -29,6 +31,11 @@ export default function Header() {
   const handleClear = () => {
     dispatch(clearCart());
   };
+
+  const handleCheckout = () => {
+    alert("Checkout not implemented");
+  };
+  
 
   return (
     <>
@@ -181,8 +188,8 @@ export default function Header() {
                         Clear Cart
                       </button>
                       <button
+                      onClick={handleCheckout}
                         className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
-                        disabled
                         title="Checkout not implemented"
                       >
                         Checkout
